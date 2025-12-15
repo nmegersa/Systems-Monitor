@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:14
+    env_file: .env
+    ports:
+      - "5433:5432"
+    volumes:
+      - systems-monitor-project:/var/lib/postgresql/data
+      - ./db:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  systems-monitor-project:
