@@ -14,9 +14,29 @@ from psycopg2.extras import RealDictCursor
 class MetricRow(BaseModel):
     id: int
     ts: datetime               # TIMESTAMPTZ will serialize nicely as ISO string
+    
+    # CPU Metrics
     cpu_percent: float
+    cpu_per_core_percent: Optional[List[float]] = None
+    cpu_user_percent: Optional[float] = None
+    cpu_system_percent: Optional[float] = None
+    load_1: Optional[float] = None
+    load_5: Optional[float] = None
+    load_15: Optional[float] = None
+
+    # Memory Metrics
     mem_percent: float
+    mem_total_bytes: Optional[int] = None
+    mem_used_bytes: Optional[int] = None
+    mem_free_bytes: Optional[int] = None
+    mem_available_bytes: Optional[int] = None
+    
+    # Disk Metrics
+    disk_mount: Optional[str] = None
     disk_percent: float
+    disk_total_bytes: Optional[int] = None
+    disk_used_bytes: Optional[int] = None
+    disk_free_bytes: Optional[int] = None
 
 
 class LatestResponse(BaseModel):
@@ -72,7 +92,9 @@ def fetch_latest_metric(conn) -> Optional[MetricRow]:
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(
             """
-            SELECT id, ts, cpu_percent, mem_percent, disk_percent
+            SELECT id, ts,cpu_percent, cpu_per_core_percent, cpu_user_percent, cpu_system_percent, load_1, load_5, load_15,
+                   mem_percent, mem_total_bytes, mem_used_bytes, mem_free_bytes, mem_available_bytes,
+                   disk_mount, disk_percent, disk_total_bytes, disk_used_bytes, disk_free_bytes
             FROM metrics
             ORDER BY ts DESC
             LIMIT 1;
@@ -91,7 +113,9 @@ def fetch_metrics_range(conn, minutes: int, limit: int) -> List[MetricRow]:
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(
             """
-            SELECT id, ts, cpu_percent, mem_percent, disk_percent
+            SELECT id, ts, cpu_percent, cpu_per_core_percent, cpu_user_percent, cpu_system_percent, load_1, load_5, load_15,
+                   mem_percent, mem_total_bytes, mem_used_bytes, mem_free_bytes, mem_available_bytes,
+                   disk_mount, disk_percent, disk_total_bytes, disk_used_bytes, disk_free_bytes
             FROM metrics
             WHERE ts >= now() - (%s * interval '1 minute')
             ORDER BY ts ASC
