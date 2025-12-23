@@ -71,7 +71,7 @@ The sampler periodically collects host metrics and inserts them into Postgres. T
 
 ## Tech stack
 
-- Languages: Python (sampler), JavaScript/Node.js (backend + frontend), SQL
+- Languages: Python (sampler), JavaScript/Node.js (backend + frontend), SQL, Handlebars, HTML/CSS
 - Database: PostgreSQL
 - Web: Express.js (backend), Chart.js (frontend)
 - Orchestration: Docker & Docker Compose
