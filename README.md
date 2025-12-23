@@ -1,12 +1,11 @@
-# Systems-Monitor
+## Systems-Monitor
 
-**Systems-Monitor** is a containerized system monitoring application that collects, stores, and visualizes system metrics such as CPU usage, memory usage, and disk utilization.
+A small, containerized system-monitoring demo that samples host metrics, stores them in PostgreSQL, and visualizes them on a dashboard.
 
-This project demonstrates a full-stack monitoring pipeline using **Docker Compose**, a **Python sampling agent**, a **Node.js backend**, and a **PostgreSQL database**, with a dashboard that includes **interactive charts built with Chart.js**.
-
----
+This repository contains a Python sampler, a backend service, a Postgres schema, and a lightweight web dashboard.
 
 ## Table of Contents
+
 1. [Project Overview](#project-overview)
 2. [Features](#features)
 3. [How It Works](#how-it-works)
@@ -15,7 +14,7 @@ This project demonstrates a full-stack monitoring pipeline using **Docker Compos
 6. [Configuration](#configuration)
 7. [Run with Docker Compose](#run-with-docker-compose)
 8. [What I Learned](#what-i-learned)
-9. [Future Improvements (Roadmap)](#future-improvements-roadmap)
+9. [Future Improvements (roadmap)](#future-improvements-roadmap)
 10. [License](#license)
 11. [Author](#author)
 
@@ -23,48 +22,26 @@ This project demonstrates a full-stack monitoring pipeline using **Docker Compos
 
 ## Project Overview
 
-Many monitoring tools hide how metrics are collected and stored. Systems-Monitor was built to explore and practice:
+Systems-Monitor collects metrics (CPU, memory, disk) with a scheduled Python sampler that writes to PostgreSQL. A backend service serves the data and a small dashboard (Chart.js) visualizes recent trends.
 
-- **Sampling system metrics** on a schedule.
-- **Persisting time-series data** in a relational database.
-- **Querying and serving metrics** through a backend service.
-- **Visualizing metrics** with interactive time-series charts.
-- **Orchestrating services** reliably using Docker Compose.
+Key goals:
 
----
+- Demonstrate scheduled metric sampling and ingestion
+- Persist and query time-series metrics in a relational DB
+- Present interactive visualizations in a simple dashboard
+- Run the full stack via Docker Compose
 
 ## Features
 
-### 🧠 Metric Collection (Python Sampler)
-- Python-based sampler that runs on a configurable interval.
-- Collects core system metrics: **CPU**, **Memory**, and **Disk usage**.
-- Configurable via environment variables (`SAMPLE_INTERVAL`, `BATCH_SIZE`).
-- Writes metrics **directly to PostgreSQL** for high-performance ingestion.
+- Python sampler: configurable interval and batch insert behavior
+- PostgreSQL schema tuned for timestamped metric records
+- Backend (Node.js) exposing REST/API endpoints + server-rendered dashboard
+- Frontend: Chart.js charts for time-series visualization
+- Dockerized: compose file for local dev and testing
 
-### 🗄️ Persistent Storage (PostgreSQL)
-- Stores timestamped metric records.
-- Optimized for querying latest snapshots and historical trends.
+## How it works
 
-### 🌐 Backend Service (Node.js)
-- Acts as the main application entrypoint.
-- Queries the database and serves data via a REST API.
-- Provides server-rendered pages for the dashboard UI.
-
-### 📊 Dashboard + Charts (Chart.js)
-- Interactive web dashboard using **Chart.js**.
-- Visualizes "latest" behavior and recent history trends to identify spikes.
-
-### 🐳 Dockerized Architecture
-- Entire stack managed by **Docker Compose**.
-- Isolated networking for secure service-to-service communication.
-
----
-
-## How It Works
-
-
-
-**High-level data flow:**
+High-level data flow (diagram):
 
 ```text
 ┌────────────┐
@@ -80,7 +57,7 @@ Many monitoring tools hide how metrics are collected and stored. Systems-Monitor
       │  (reads/queries)
       ▼
 ┌────────────┐
-│  Backend   │  (Node.js/Python)
+│  Backend   │  (Node.js / Python)
 │  API + UI  │
 └─────┬──────┘
       │
@@ -88,99 +65,77 @@ Many monitoring tools hide how metrics are collected and stored. Systems-Monitor
 ┌────────────┐
 │ Dashboard  │  (Browser + Chart.js)
 └────────────┘
+```
 
--- 
+The sampler periodically collects host metrics and inserts them into Postgres. The backend queries the DB and exposes endpoints used by the dashboard to render charts.
 
-The Python sampler gathers system metrics every few seconds.
+## Tech stack
 
-It inserts these records into the PostgreSQL database.
+- Languages: Python (sampler), JavaScript/Node.js (backend + frontend), SQL
+- Database: PostgreSQL
+- Web: Express.js (backend), Chart.js (frontend)
+- Orchestration: Docker & Docker Compose
 
-The Node.js backend queries the database for the requested time range.
+## Repository structure
 
-The Dashboard renders the results into interactive graphs.
+The main repository layout (top-level):
 
-Tech Stack
-Languages
-
-Python: Metric sampling agent logic.
-
-JavaScript (Node.js): Backend API, server-side logic, and frontend charts.
-
-SQL: Database schema management and metric queries.
-
-Tools & Infrastructure
-
-Docker & Docker Compose: Service orchestration.
-
-PostgreSQL: Relational storage for time-series data.
-
-Express.js: Web framework for the Node.js backend.
-
-Chart.js: Frontend data visualization.
-
-Repository Structure
-Plaintext
+```text
 Systems-Monitor/
-├── api/                # Backend API routes and handlers
+
+├── api/                # Backend API and server code (Python and/or Node routes)
 ├── db/                 # SQL schema and setup scripts
 ├── sampler/            # Python metric sampler service
-├── views/              # UI templates (EJS/HTML)
-├── frontend/static/    # CSS and Client-side JS
-├── docker-compose.yaml  # Orchestration config
-├── Dockerfile           # Backend container build instructions
-├── server.js            # Node.js entrypoint
-├── .env.example         # Template for environment variables
-└── README.md            # Project documentation
-Configuration
-Copy .env.example to a new file named .env and update the values. Do not commit your .env file to version control.
+├── views/              # UI templates (Handlebars: .hbs)
+├── frontend/static/    # CSS and client-side JS (dashboard)
+├── docker-compose.yaml # Compose orchestration config
+├── Dockerfile          # Backend container build instructions
+├── server.js           # Node.js entrypoint
+├── .env.example        # Template for environment variables
+└── README.md           # Project documentation
+```
 
-Key Variables:
+## Configuration
 
-Database: POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST, DB_PORT.
+1. Copy `.env.example` to `.env` and update values. Keep `.env` out of version control.
 
-Sampler: SAMPLE_INTERVAL (seconds between samples), BATCH_SIZE (rows per insert).
+Important variables:
 
-Run with Docker Compose
-Prerequisites
+- Database: `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `DB_HOST`, `DB_PORT`
+- Sampler: `SAMPLE_INTERVAL` (seconds between samples), `BATCH_SIZE` (rows per insert)
 
-Docker installed
+## Run with Docker Compose
 
-Docker Compose installed
+Prerequisites:
 
-Installation & Launch
+- Docker installed
+- Docker Compose available
 
-Clone the repository.
+Quick start:
 
-Create your .env file.
+1. Clone the repo and create your `.env` from `.env.example`.
+2. Build and start the stack with `docker compose up --build`.
 
-Run the following command:
+When the containers are running, open http://localhost:8000 (or the port configured in your `.env`).
 
-Bash
-docker compose up --build
-Access the App
+## What I learned
 
-Once the containers are running, open your browser to: http://localhost:8000
+- Service decoupling: separating sampler (producer) from backend (consumer)
+- Time-series handling in a relational DB
+- Container networking with Docker Compose
+- Mapping DB rows to Chart.js datasets for visualization
 
-What I Learned
-Service Decoupling: How to separate a data-producer (Sampler) from a data-consumer (Backend).
+## Future improvements (roadmap)
 
-Time-Series Management: Handling timestamped data in a standard relational database.
+- Data pruning/archival for long-term storage
+- Alerting (Slack/Discord/webhooks) on high CPU usage
+- Additional metrics: network I/O and per-process stats
+- Optional authentication for the dashboard
 
-Container Networking: Using Docker Compose to let services talk to each other by service name.
+## License
 
-Data Visualization: Mapping raw database rows to Chart.js datasets.
-
-Future Improvements (Roadmap)
-⏳ Data Pruning: Implement a background job to archive or delete data older than 30 days.
-
-🔔 Alerting: Integration with Discord/Slack webhooks when CPU exceeds 90%.
-
-📡 Extended Metrics: Adding Network I/O and per-process resource tracking.
-
-🔐 Auth: Adding a simple login layer to protect the dashboard.
-
-License
 This project is licensed under the MIT License.
 
-Author
+## Author
+
 Built with 💡 by Nathan Megersa
