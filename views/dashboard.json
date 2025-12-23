@@ -1,0 +1,24 @@
+{
+  "title": "Dashboard — Systems Monitor",
+  "homeHref": "/",
+  "dashboardHref": "/",
+  "aboutHref": "/about",
+
+  "isDashboard": true,
+  "isAbout": false,
+
+  "isLatestMode": true,
+  "isRangeMode": false,
+  "rangeHiddenClass": "d-none",
+
+  "rangeOptions": [
+    { "value": 5, "label": "Last 5 Minutes", "selected": false },
+    { "value": 15, "label": "Last 15 Minutes", "selected": true },
+    { "value": 60, "label": "Last 60 Minutes", "selected": false },
+    { "value": 360, "label": "Last 6 Hours", "selected": false },
+    { "value": 1440, "label": "Last 24 Hours", "selected": false }
+  ],
+
+  "statusText": "Ready",
+  "dashboardJsPath": "/static/dashboard.js"
+}

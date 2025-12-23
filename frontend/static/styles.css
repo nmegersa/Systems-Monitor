@@ -1,0 +1,113 @@
+:root {
+  /* Scheme 1 palette */
+  --bg: #F5F7FA;
+  --card: #FFFFFF;
+  --border: #E5E7EB;
+
+  --text: #111827;
+  --muted: #6B7280;
+
+  --nav: #111827;
+
+  --accent: #2563EB;
+  --accent-hover: #1D4ED8;
+
+  --success: #16A34A;
+  --warning: #F59E0B;
+  --error: #DC2626;
+
+  --radius: 12px;
+  --shadow: 0 6px 18px rgba(17, 24, 39, 0.08);
+}
+
+/* Page */
+body {
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Navbar */
+.navbar,
+.navbar.bg-dark {
+  background: var(--nav) !important;
+}
+.navbar .navbar-brand,
+.navbar .nav-link {
+  color: #fff !important;
+}
+.navbar .nav-link.active {
+  opacity: 1;
+  font-weight: 600;
+}
+.navbar .nav-link:not(.active) {
+  opacity: 0.8;
+}
+
+/* Cards / panels */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card .card-title,
+h1, h2, h3, h4 {
+  color: var(--text);
+}
+.text-muted {
+  color: var(--muted) !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  border-radius: 10px;
+}
+.btn-primary:hover,
+.btn-primary:focus {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/* Inputs / selects */
+.form-select,
+.form-control {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.form-select:focus,
+.form-control:focus {
+  border-color: rgba(37, 99, 235, 0.45);
+  box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+}
+
+/* Tables */
+.table {
+  color: var(--text);
+}
+.table thead th {
+  color: var(--muted);
+  border-bottom: 1px solid var(--border) !important;
+}
+.table td, .table th {
+  border-top: 1px solid var(--border) !important;
+}
+
+/* Alerts */
+.alert-danger {
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  background: rgba(220, 38, 38, 0.10);
+  color: var(--error);
+}
+
+/* Small UI text blocks (like status area) */
+#statusText {
+  color: var(--muted);
+}
+#autoRefreshText {
+  color: var(--muted);
+}
+#lastPoll {
+  color: var(--muted);
+}
