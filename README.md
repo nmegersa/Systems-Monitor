@@ -80,7 +80,7 @@ Many monitoring tools hide how metrics are collected and stored. Systems-Monitor
       │  (reads/queries)
       ▼
 ┌────────────┐
-│  Backend   │  (Node.js)
+│  Backend   │  (Node.js/Python)
 │  API + UI  │
 └─────┬──────┘
       │
@@ -88,6 +88,9 @@ Many monitoring tools hide how metrics are collected and stored. Systems-Monitor
 ┌────────────┐
 │ Dashboard  │  (Browser + Chart.js)
 └────────────┘
+
+-- 
+
 The Python sampler gathers system metrics every few seconds.
 
 It inserts these records into the PostgreSQL database.
