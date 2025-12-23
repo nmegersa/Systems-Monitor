@@ -1,0 +1,25 @@
+SYSTEMS MONITOR TROUBLESHOOTING
+
+1) "connection refused" when API/Sampler tries DB
+- Inside docker network, Postgres is on port 5432.
+- Fix api/sampler env: DB_HOST=db, DB_PORT=5432.
+
+2) "password authentication failed for user postgres"
+- POSTGRES_PASSWORD must match DB_PASSWORD.
+- If you changed passwords but reused the old volume:
+  docker compose down -v
+  docker compose up --build
+
+3) Dashboard doesn't auto-refresh
+- Auto-refresh only runs when mode=latest.
+- Open browser console: look for JS errors.
+- Confirm API returns non-500 responses.
+
+4) Chart repeats the same time label
+- If labels are only to the second, repeated points can share the same label.
+- Deduplicate by row.id before pushing to the buffer.
+- Or increase timestamp precision (only if desired).
+
+5) Range mode tables/charts not updating
+- Make sure updateChartsRange(points) exists if dashboard.js calls it.
+- Verify /api/range returns points and is not empty.
